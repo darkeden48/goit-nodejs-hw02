@@ -3,9 +3,9 @@ const { NotFound } = require("http-errors");
 const Joi = require("joi");
 
 const contactsSchema = Joi.object({
-  // name: Joi.string().required(),
-  // email: Joi.string(),
-  // phone: Joi.string(),
+  name: Joi.string().required(),
+  email: Joi.string().required(),
+  phone: Joi.string().required(),
 })
 const router = express.Router();
 
@@ -94,12 +94,13 @@ router.delete('/:contactId', async (req, res, next) => {
 
 router.put('/:contactId', async (req, res, next) => {
   try{
-    // const {error} = contactsSchema.validate(req.body);
-    // if(error){
-    //     error.status = 400;
-    //     error.message = "missing fields";
-    //     throw error;
-    // }
+    const {error} = contactsSchema.validate(req.body);
+    console.log({error})
+    if(error){
+        error.status = 400;
+        error.message = "missing fields";
+        throw error;
+    }
   const { contactId } = req.params;
   const result = await contactsOperations.updateContact(contactId,req.body);
   if (!result) {
